@@ -1,20 +1,23 @@
-import { Button } from "@/components/ui/button"
-
-export function App() {
+import { Routes, Route } from "react-router"
+import { Home } from "./pages/home"
+import { Company } from "./pages/company"
+import Register from "./pages/auth/register"
+import LogIn from "./pages/auth/login"
+import MainLayOut from "./pages/layout/main.layout"
+import AuthLayOut from "./pages/layout/auth.layout"
+const App = () => {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+    <>
+      <Routes>
+        <Route path="/auth/register" element={<Register />}></Route>
+        <Route path="/auth/log-in" element={<LogIn />}></Route>
+
+        <Route element={<AuthLayOut />}>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/company" element={<Company />}></Route>
+        </Route>
+      </Routes>
+    </>
   )
 }
 
