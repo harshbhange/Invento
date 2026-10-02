@@ -14,7 +14,7 @@ export type User = {
   updatedAt: string
   profile: Profile
   companyMembers: CompanyMember[]
-}
+} | null
 
 export type Profile = {
   id: string
@@ -35,6 +35,7 @@ type CompanyMember = {
   updatedAt: Date
   userId: string
   companyId: string
+  company: Company
   role: companyRole
 } | null
 

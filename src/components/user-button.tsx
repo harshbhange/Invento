@@ -1,6 +1,5 @@
 import { getUserDetails_API } from "@/api/user.api"
 import type { User } from "@/types"
-import { useEffect, useState } from "react"
 
 import { Spinner } from "./ui/spinner"
 import { Button } from "@/components/ui/button"

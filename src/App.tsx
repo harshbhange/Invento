@@ -22,6 +22,7 @@ const App = () => {
         <Route path="/auth/user/profile">
           <Route index element={<Profile />} />
           <Route path="update" element={<UpdateProfile />} />
+          <Route path="create" element={<UpdateProfile />} />
         </Route>
 
         {/* Company */}
