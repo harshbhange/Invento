@@ -4,19 +4,30 @@ import { Company } from "./pages/company"
 import Register from "./pages/auth/register"
 import LogIn from "./pages/auth/login"
 import AuthLayOut from "./pages/layout/auth.layout"
+import Profile from "./pages/user/profile"
+import UpdateProfile from "./pages/user/update-profile"
+
 const App = () => {
   return (
-    <>
-      <Routes>
-        <Route path="/auth/register" element={<Register />}></Route>
-        <Route path="/auth/login" element={<LogIn />}></Route>
+    <Routes>
+      {/* Public routes */}
+      <Route path="/auth/register" element={<Register />} />
+      <Route path="/auth/login" element={<LogIn />} />
 
-        <Route element={<AuthLayOut />}>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/company" element={<Company />}></Route>
+      {/* Protected / application routes */}
+      <Route element={<AuthLayOut />}>
+        <Route path="/" element={<Home />} />
+
+        {/* User */}
+        <Route path="/auth/user/profile">
+          <Route index element={<Profile />} />
+          <Route path="update" element={<UpdateProfile />} />
         </Route>
-      </Routes>
-    </>
+
+        {/* Company */}
+        <Route path="/auth/company" element={<Company />} />
+      </Route>
+    </Routes>
   )
 }
 
