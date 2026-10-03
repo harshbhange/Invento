@@ -14,12 +14,13 @@ import {
 
 import { Link } from "react-router"
 import { Avatar } from "./ui/avatar"
-import { useApi } from "@/hooks/call-api-hook"
+import { useRecoilState } from "@swarmica/recoil"
+import { loggedInUserAtom } from "@/context/atoms"
+import { logOutApi } from "@/api/auth.api"
 
 const UserButton = () => {
-  const { data: user, loading } = useApi<User>(getUserDetails_API)
-
-  if (loading) {
+  const [user] = useRecoilState(loggedInUserAtom)
+  if (user === null) {
     return <Spinner className="size-5" />
   }
 
@@ -68,16 +69,31 @@ const UserButton = () => {
         <DropdownMenuSeparator />
 
         {user?.profile ? (
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="cursor-pointer">
             <Link to="/auth/user/profile">Profile</Link>
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="cursor-pointer">
             <Link to="/auth/user/profile/update">Update Profile</Link>
           </DropdownMenuItem>
         )}
 
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer">
+          <Button
+            className="w-full"
+            onClick={async () => {
+              try {
+                const res = await logOutApi()
+                window.location.reload()
+                return res
+              } catch (error) {
+                console.log(error)
+              }
+            }}
+          >
+            Logout
+          </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

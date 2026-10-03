@@ -40,13 +40,13 @@ const ProfileForm = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
+  const pathName = location.pathname.split("/profile/")[1]
   const onSubmit = async (data: ProfileFormInput) => {
     setLoading(true)
-    console.log(location)
     try {
       const res = await createProfile_Api({
-        ...data,
-        name: capitalizeName(data.name),
+        data: { ...data, name: capitalizeName(data.name) },
+        pathName,
       })
       console.log(res.message)
       navigate("/auth/user/profile")
@@ -94,7 +94,7 @@ const ProfileForm = () => {
           )}
         />
       </FieldGroup>
-      <div>
+      <div className="flex flex-row gap-x-4">
         {/* Phone */}
         <FieldGroup>
           <Controller

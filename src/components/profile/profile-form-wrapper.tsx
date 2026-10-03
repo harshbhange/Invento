@@ -1,4 +1,4 @@
-import { Link } from "react-router"
+import { Link, useLocation } from "react-router"
 
 import {
   Card,
@@ -13,17 +13,25 @@ import { Separator } from "../ui/separator"
 import ProfileForm from "./profile-form"
 
 const ProfileFormWrapper = () => {
+  const capitalizeName = (name: string) => {
+    return name
+      .trim()
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  }
+  const location = useLocation()
+  const pathName = location.pathname.split("/profile/")[1]
   return (
     <Card className="h-f flex h-full w-full flex-col shadow-sm">
       {/* Header */}
       <CardHeader className="shrink-0 space-y-2">
         <CardTitle className="text-2xl font-semibold tracking-tight">
-          Update Your Profile
+          {capitalizeName(pathName)} Your Profile
         </CardTitle>
 
         <CardDescription>
-          Update your personal information and keep your account details
-          current.
+          {capitalizeName(pathName)} your personal information and keep your
+          account details current.
         </CardDescription>
       </CardHeader>
 

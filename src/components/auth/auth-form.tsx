@@ -52,7 +52,7 @@ const AuthForm = <T extends FieldValues>({
       const res = await onSubmit(data)
       if (res?.user?.id) {
         form.reset()
-        navigate("/")
+        navigate("/auth/user/profile/create")
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

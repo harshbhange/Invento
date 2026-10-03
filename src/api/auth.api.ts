@@ -24,3 +24,8 @@ export const loginUserAPi = async (data: LoginInput) => {
   })
   return response.data
 }
+
+export const logOutApi = async () => {
+  const res = api.post("/auth/credentials/logout")
+  return res
+}

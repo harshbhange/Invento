@@ -7,7 +7,7 @@ import {
   Building2,
   Pencil,
 } from "lucide-react"
-import { useNavigate } from "react-router"
+import { Link, useNavigate } from "react-router"
 
 import { getUserDetails_API, getUserProfile_Api } from "@/api/user.api"
 import { useApi } from "@/hooks/call-api-hook"
@@ -194,9 +194,27 @@ const Profile = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">
-                  No company associated with this account.
-                </p>
+                <div className="flex flex-col gap-y-2">
+                  <p className="text-sm text-muted-foreground">
+                    No company associated with this account.
+                  </p>
+
+                  <div className="flex flex-wrap gap-3 text-sm">
+                    <Link
+                      to="/company/registe"
+                      className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
+                    >
+                      Join a company
+                    </Link>
+
+                    <Link
+                      to="/company/join"
+                      className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
+                    >
+                      Start your own
+                    </Link>
+                  </div>
+                </div>
               )}
             </div>
           </CardContent>
