@@ -13,6 +13,7 @@ export type User = {
   createdAt: string
   updatedAt: string
   profile: Profile
+  newUser: boolean
   companyMembers: CompanyMember[]
 } | null
 

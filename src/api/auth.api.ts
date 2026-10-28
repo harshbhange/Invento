@@ -17,7 +17,7 @@ export const registerUserAPI = async (
   return response.data
 }
 
-export const loginUserAPi = async (data: LoginInput) => {
+export const loginUserAPi = async (data: LoginInput): Promise<AuthApiType> => {
   const response = await api.post("/auth/credentials/login", {
     ...data,
     provider: "CREDENTIALS",
@@ -26,6 +26,6 @@ export const loginUserAPi = async (data: LoginInput) => {
 }
 
 export const logOutApi = async () => {
-  const res = api.post("/auth/credentials/logout")
-  return res
+  const res = await api.post("/auth/credentials/logout")
+  return res.data
 }

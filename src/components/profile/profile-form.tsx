@@ -12,11 +12,20 @@ import { Input } from "../ui/input"
 import { Textarea } from "../ui/textarea"
 import { Button } from "../ui/button"
 import { createProfile_Api } from "@/api/user.api"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { useLocation, useNavigate } from "react-router"
+import { useRecoilState } from "@swarmica/recoil"
+import { loggedInUsersProfileAtom } from "@/context/atoms"
 
 const ProfileForm = () => {
+  const location = useLocation()
+  const pathName = location.pathname.split("/profile/")[1]
+  const [loggedInUserProfile, setLoggedInUserProfile] = useRecoilState(
+    loggedInUsersProfileAtom
+  )
+  const updatedProfile = pathName === "update" ? loggedInUserProfile : undefined
+  console.log(updatedProfile)
   const form = useForm<ProfileFormInput, ProfileFormOutput>({
     resolver: zodResolver(profileZodSchema),
     defaultValues: {
@@ -28,6 +37,22 @@ const ProfileForm = () => {
       gender: "OTHER",
     },
   })
+
+  useEffect(() => {
+    if (pathName === "update" && loggedInUserProfile) {
+      form.reset({
+        name: loggedInUserProfile.name ?? "",
+        phone: loggedInUserProfile.phone ?? "",
+        address: loggedInUserProfile.address ?? "",
+        bio: loggedInUserProfile.bio ?? "",
+        dob: loggedInUserProfile.dob
+          ? String(loggedInUserProfile.dob).slice(0, 10)
+          : "",
+        gender: loggedInUserProfile.gender ?? "OTHER",
+      })
+    }
+  }, [form, pathName, loggedInUserProfile, form.reset])
+
   const [loading, setLoading] = useState<boolean>(false)
   const [serverError, setServerError] = useState<string | null>(null)
 
@@ -39,8 +64,6 @@ const ProfileForm = () => {
   }
 
   const navigate = useNavigate()
-  const location = useLocation()
-  const pathName = location.pathname.split("/profile/")[1]
   const onSubmit = async (data: ProfileFormInput) => {
     setLoading(true)
     try {
@@ -48,7 +71,10 @@ const ProfileForm = () => {
         data: { ...data, name: capitalizeName(data.name) },
         pathName,
       })
-      console.log(res.message)
+      console.log(res.profile)
+      if (res?.profile) {
+        setLoggedInUserProfile(res.profile)
+      }
       navigate("/auth/user/profile")
       setLoading(false)
       form.reset()
@@ -230,7 +256,9 @@ const ProfileForm = () => {
       )}
       {/* Submit */}
       <Button type="submit" className="mt-2 w-full" disabled={loading}>
-        {form.formState.isSubmitting ? "Saving changes..." : "Update Profile"}
+        {form.formState.isSubmitting
+          ? "Saving changes..."
+          : `${capitalizeName(pathName)} Profile`}
       </Button>
     </form>
   )

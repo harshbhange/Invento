@@ -1,6 +1,3 @@
-import { getUserDetails_API } from "@/api/user.api"
-import type { User } from "@/types"
-
 import { Spinner } from "./ui/spinner"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,16 +12,33 @@ import {
 import { Link } from "react-router"
 import { Avatar } from "./ui/avatar"
 import { useRecoilState } from "@swarmica/recoil"
-import { loggedInUserAtom } from "@/context/atoms"
+import { loggedInUserAtom, loggedInUsersProfileAtom } from "@/context/atoms"
 import { logOutApi } from "@/api/auth.api"
+import { useApi } from "@/hooks/call-api-hook"
+import { getUserProfile_Api } from "@/api/user.api"
+import { useEffect } from "react"
 
 const UserButton = () => {
-  const [user] = useRecoilState(loggedInUserAtom)
-  if (user === null) {
+  const [loggedInUser] = useRecoilState(loggedInUserAtom)
+  const [loggedInUsersProfile, setLoggedInUserProfile] = useRecoilState(
+    loggedInUsersProfileAtom
+  )
+
+  const { data, loading } = useApi(getUserProfile_Api)
+
+  useEffect(() => {
+    if (data) {
+      setLoggedInUserProfile(data)
+    }
+  }, [data, setLoggedInUserProfile])
+
+  const profile = loggedInUsersProfile
+
+  if (loading) {
     return <Spinner className="size-5" />
   }
 
-  const name = user?.profile?.name?.trim()
+  const name = profile?.name?.trim()
 
   const initials = name
     ? name
@@ -60,7 +74,7 @@ const UserButton = () => {
               </span>
 
               <span className="truncate text-xs text-muted-foreground">
-                {user?.email}
+                {loggedInUser?.email}
               </span>
             </div>
           </div>
@@ -68,7 +82,7 @@ const UserButton = () => {
 
         <DropdownMenuSeparator />
 
-        {user?.profile ? (
+        {profile ? (
           <DropdownMenuItem asChild className="cursor-pointer">
             <Link to="/auth/user/profile">Profile</Link>
           </DropdownMenuItem>

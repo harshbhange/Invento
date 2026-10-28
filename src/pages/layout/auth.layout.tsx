@@ -11,10 +11,8 @@ const AuthLayOut = () => {
 
   const { data, loading } = useApi(getUserDetails_API)
 
-  console.log(data)
   useEffect(() => {
     if (!data) return
-
     setLoggedInUser(data.user)
   }, [data, setLoggedInUser])
 

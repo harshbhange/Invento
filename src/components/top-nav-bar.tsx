@@ -3,7 +3,7 @@ import UserButton from "./user-button"
 
 const TopNavBar = () => {
   return (
-    <nav className="flex h-16 w-full items-center border-b px-6 shadow-sm">
+    <nav className="sticky top-0 z-50 flex h-16 w-full items-center border-b bg-background px-6 shadow-sm">
       {/* Logo */}
       <div className="shrink-0">
         <Link to="/">
@@ -23,12 +23,7 @@ const TopNavBar = () => {
         </li>
 
         <li>
-          <Link
-            to="/auth/company"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Company
-          </Link>
+          <Link to={"/auth/company"}>Company</Link>
         </li>
 
         <li>

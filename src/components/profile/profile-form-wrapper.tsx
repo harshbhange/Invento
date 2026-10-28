@@ -1,9 +1,8 @@
-import { Link, useLocation } from "react-router"
+import { useLocation } from "react-router"
 
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
   CardDescription,
@@ -43,7 +42,7 @@ const ProfileFormWrapper = () => {
       <Separator />
 
       {/* Footer */}
-      <CardFooter className="shrink-0 flex-col items-start gap-3 pt-5">
+      {/*<CardFooter className="shrink-0 flex-col items-start gap-3 pt-5">
         <div>
           <p className="text-sm font-medium">Company</p>
 
@@ -67,7 +66,7 @@ const ProfileFormWrapper = () => {
             Start your own
           </Link>
         </div>
-      </CardFooter>
+      </CardFooter>*/}
     </Card>
   )
 }

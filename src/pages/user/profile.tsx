@@ -7,25 +7,23 @@ import {
   Building2,
   Pencil,
 } from "lucide-react"
-import { Link, useNavigate } from "react-router"
+import { Link, Navigate } from "react-router"
 
-import { getUserDetails_API, getUserProfile_Api } from "@/api/user.api"
+import { getUserDetails_API } from "@/api/user.api"
 import { useApi } from "@/hooks/call-api-hook"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { useRecoilValue } from "@swarmica/recoil"
+import { loggedInUsersProfileAtom } from "@/context/atoms"
 
 const Profile = () => {
-  const navigate = useNavigate()
+  const profile = useRecoilValue(loggedInUsersProfileAtom)
+  const { data, loading: userLoading } = useApi(getUserDetails_API)
 
-  const { data: profile, loading: profileLoading } = useApi(getUserProfile_Api)
-
-  const { data: user, loading: userLoading } = useApi(getUserDetails_API)
-
-  const loading = profileLoading || userLoading
-
+  const loading = userLoading
   if (loading) {
     return (
       <div className="mx-auto w-full max-w-5xl space-y-6 p-6">
@@ -39,18 +37,8 @@ const Profile = () => {
     )
   }
 
-  if (!user) {
-    return (
-      <div className="flex min-h-100 items-center justify-center">
-        <p className="text-muted-foreground">
-          Unable to load user information.
-        </p>
-      </div>
-    )
-  }
-
-  const handleUpdateProfile = () => {
-    navigate("/auth/user/profile/update")
+  if (!profile) {
+    return <Navigate to={"/auth/user/profile/create"} />
   }
 
   return (
@@ -65,7 +53,7 @@ const Profile = () => {
               {/* Avatar */}
               <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-4 border-background bg-primary text-3xl font-semibold text-primary-foreground">
                 {profile?.name?.charAt(0).toUpperCase() ||
-                  user.email.charAt(0).toUpperCase()}
+                  data?.user?.email.charAt(0).toUpperCase()}
               </div>
 
               {/* Name */}
@@ -74,15 +62,34 @@ const Profile = () => {
                   {profile?.name || "Complete your profile"}
                 </h1>
 
-                <p className="text-sm text-muted-foreground">{user.email}</p>
+                <p className="text-sm text-muted-foreground">
+                  {data?.user?.email}
+                </p>
               </div>
             </div>
 
             {/* Update Profile */}
-            <Button onClick={handleUpdateProfile}>
-              <Pencil className="mr-2 h-4 w-4" />
-              Update Profile
-            </Button>
+            {data?.user?.newUser ? (
+              <Button className="sm:mb-4">
+                <Link
+                  className="flex items-center justify-center"
+                  to={"/auth/user/profile/create"}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Create Profile
+                </Link>
+              </Button>
+            ) : (
+              <Button className="sm:my-auto">
+                <Link
+                  className="flex items-center justify-center"
+                  to={"/auth/user/profile/update"}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Update Profile
+                </Link>
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -103,7 +110,7 @@ const Profile = () => {
               <InfoItem
                 icon={<Mail className="h-4 w-4" />}
                 label="Email"
-                value={user.email}
+                value={data?.user?.email}
               />
 
               <InfoItem
@@ -158,7 +165,7 @@ const Profile = () => {
               <p className="text-xs text-muted-foreground">Account type</p>
 
               <Badge variant="secondary" className="mt-2">
-                {user.provider}
+                {data?.user?.provider}
               </Badge>
             </div>
 
@@ -166,7 +173,9 @@ const Profile = () => {
               <p className="text-xs text-muted-foreground">Member since</p>
 
               <p className="mt-1 text-sm font-medium">
-                {new Date(user.createdAt).toLocaleDateString()}
+                {data?.user?.createdAt
+                  ? new Date(data.user.createdAt).toLocaleDateString()
+                  : "Not available"}
               </p>
             </div>
 
@@ -179,9 +188,9 @@ const Profile = () => {
                 <p className="text-sm font-medium">Companies</p>
               </div>
 
-              {user.companyMembers?.length ? (
+              {data?.user?.companyMembers?.length ? (
                 <div className="space-y-2">
-                  {user?.companyMembers.map((member) => (
+                  {data?.user?.companyMembers.map((member) => (
                     <div key={member?.id} className="rounded-lg border p-3">
                       <p className="text-sm font-medium">
                         {member?.company.name}
@@ -201,14 +210,14 @@ const Profile = () => {
 
                   <div className="flex flex-wrap gap-3 text-sm">
                     <Link
-                      to="/company/registe"
+                      to="/auth/company/join"
                       className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
                     >
                       Join a company
                     </Link>
 
                     <Link
-                      to="/company/join"
+                      to="/auth/company/register"
                       className="font-medium underline underline-offset-4 transition-colors hover:text-primary"
                     >
                       Start your own
@@ -233,10 +242,15 @@ const Profile = () => {
               </p>
             </div>
 
-            <Button onClick={handleUpdateProfile}>
-              <Pencil className="mr-2 h-4 w-4" />
-              Add Information
-            </Button>
+            <Link
+              className="flex items-center justify-center"
+              to={"/auth/user/profile/create"}
+            >
+              <Button>
+                <Pencil className="mr-2 h-4 w-4" />
+                Add Information
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       )}
